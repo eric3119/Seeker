@@ -65,18 +65,18 @@ Please segment the codebase into units and list them as:
 
 Unit 1:
 [Code Segment]
-{unit1}
+{{unit1}}
 
 Unit 2:
 [Code Segment]
-{unit2}
+{{unit2}}
 
 ...
 
 Ensure that each unit complies with the criteria specified above.
 """
 
-detector_senario_match = \
+detector_scenario_match = \
 """You are a java code auditor. You will be given a doc describe different exception scenarios and a java code snippet.
 
 Your task is to label each line of the code snippet with the exception scenario that it belongs to. If a line does not belong to any scenario, label it with "None". If a line belongs to one of the given scenarios, label it with all the scenarios it belongs to.
@@ -126,17 +126,17 @@ Based on the code summary and the potential exception branches provided, identif
 
 Please answer in the following JSON format:
 
-{
+{{
     "ExceptionNodes": [
-        {
+        {{
             "ExceptionType": "ExceptionType1",
-        },
-        {
+        }},
+        {{
             "ExceptionType": "ExceptionType2",
-        },
+        }},
         ...
     ]
-}
+}}
 
 Ensure that your response strictly follows the specified format.
 """
@@ -164,29 +164,20 @@ For each exception, please calculate:
 - Suitability Score (from 0 to 1) of the proposed handling strategy.
 
 [Identified Exceptions and Handling Strategies]
-{
-    "ExceptionNodes": [
-        {
-            "ExceptionType": "ExceptionType1",
-            "HandlingStrategy": "{strategy1}",
-            "CEE_Info": "{info1}"
-        },
-        ...
-    ]
-}
+{exception_nodes}
 
 Provide your calculations and the final grades in the following JSON format:
 
-{
+{{
     "Exceptions": [
-        {
+        {{
             "ExceptionType": "ExceptionType1",
             "LikelihoodScore": value,
             "SuitabilityScore": value,
-        },
+        }},
         ...
     ]
-}
+}}
 
 Please ensure your response adheres to the specified format.
 
@@ -206,7 +197,7 @@ Generate the optimized code with the applied exception handling strategies.
 Please provide the optimized code in the following format:
 
 [Optimized Code]
-{optimized_code}
+{{optimized_code}}
 
 Ensure that the code is syntactically correct and adheres to best practices in exception handling.
 

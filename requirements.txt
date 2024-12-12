@@ -2,6 +2,7 @@ pylint
 Levenshtein
 openai
 javalang
-pytorch
+torch
 tensorflow
 argparse
+psutil

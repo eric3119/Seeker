@@ -24,12 +24,17 @@ def planner_agent(codebase):
     
     # Extract units from the response
     units = {}
-    unit_pattern = r'Unit\s+(\d+):\s*\[Code Segment\]\s*(.*?)\s*(?=Unit\s+\d+:|\Z)'
+    # unit_pattern = r'Unit\s+(\d+):\s*\[Code Segment\]\s*(.*?)\s*(?=Unit\s+\d+:|\Z)'
+    # pattern for qwen model - Example: **Unit 1:**
+    unit_pattern = r'\*\*Unit\s+(\d+):\*\*\s*(.*?)\s*(?=\*\*Unit\s+\d+:|\Z)'
+    print(f"Planner agent response: {response}")
     matches = re.finditer(unit_pattern, response, re.DOTALL)
     for match in matches:
         unit_number = int(match.group(1))
         unit_code = match.group(2).strip()
         units[unit_number] = unit_code
+
+    print(f"Planner agent segmented the codebase into {len(units)} units.")
     return units
 
 # Function to get exception branches from cee.json
@@ -195,6 +200,7 @@ def ranker_agent(cee, exception_nodes):
         rankings = json.loads(response)
     except json.JSONDecodeError:
         print("Error parsing GPT response in Ranker agent.")
+        print(response)
         rankings = {"Exceptions": []}
     
     return rankings
@@ -236,6 +242,7 @@ def main(input_file, output_file, cee_file):
         # Retrieval phase: Predator agent
         code_summary_ = code_summary(unit_code)
         exception_nodes = predator_agent(unit_code, code_summary_, matched_branches)
+        print(f"Predator agent identified {len(exception_nodes)} exceptions in Unit {unit_number}.")
         # Mapping relevant exception handling strategies from CEE
         handling_strategies = ''
         for exception in exception_nodes:
@@ -246,7 +253,7 @@ def main(input_file, output_file, cee_file):
         if not handling_strategies:
             handling_strategies = "No specific handling strategies found."
         # Ranking phase: Ranker agent
-        rankings = ranker_agent(exception_nodes)
+        rankings = ranker_agent(cee, exception_nodes)
         # Handling phase: Handler agent
         # Filter exceptions based on grade threshold
         grade_threshold = 0.5
@@ -284,6 +291,6 @@ if __name__ == "__main__":
     parser.add_argument('--cee_path', type=str, default='cee.json', help='Path to the cee.json file')
     args = parser.parse_args()
     input_file = args.code_path
-    output_file = args.write_path
+    output_file = args.output_path
     cee_file = args.cee_path
     main(input_file, output_file, cee_file)
